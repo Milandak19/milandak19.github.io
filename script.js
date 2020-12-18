@@ -1,20 +1,20 @@
-var available = [];
-var borrowed = [];
-var broken = [];
+let available = [];
+let borrowed = [];
+let broken = [];
 
 function renderAvailable() {
    let available_list = document.getElementById('available-list')
-  let input = ``;
-  for (let i = 0; i < available.length; i++) {
-    input = `
-    <div class="container" id="container-available">
-        <div class="list available">
+   let input = ``;
+   for (let i = 0; i < available.length; i++) {
+      input = `
+      <div class="container" id="container-available${available[i][0]}">
+         <div class="list available">
             ${available[i][1]}
-        </div>
-        <button type="submit" class="btn-available" onclick="sendDataBorrowedAvailable(${available[i][0]})">Borrowed</button>
-        <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable(${available[i][0]})">Broken</button>
-    </div>`
-    available_list.innerHTML += input;
+         </div>
+         <button type="submit" class="btn-borrowed" onclick="sendDataBorrowedAvailable(${available[i][0]})">Borrowed</button>
+         <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable(${available[i][0]})">Broken</button>
+      </div>`
+      available_list.innerHTML += input;
    }
 }
 
@@ -26,88 +26,116 @@ function addData(event) {
   temp.push(index,book)
   available.push(temp)
   renderAvailable()
-//   console.log(available[0][0]);
 }
 
 function sendDataBorrowedAvailable(num) {
    let borrowed_list = document.getElementById('borrowed-list')
+   let available_list = document.getElementById(`container-available${num}`)
    for (let i = 0; i < available.length; i++) {
-      if (i === num) {
-         
+      if (available[i][0] === num) {
+         let input = `<div class="container" id="container-borrowed${available[i][0]}">
+         <div class="list borrowed">
+             ${available[i][1]}
+         </div>
+         <button type="submit" class="btn-available"
+             onclick="sendDataAvailableBorrowed(${available[i][0]})">Available</button>
+         <button type="submit" class="btn-broken" onclick="sendDataBrokenBorrowed(${available[i][0]})">Broken</button>
+     </div>`
+     borrowed_list.innerHTML += input
+     borrowed.push(available[i])
       }
    }
+   available_list.remove()
+   available.splice(num)
 }
-// function sendDataBorrowedAvailable() {
-//    let data = document.getElementsByClassName('available');
-//    let list = document.getElementById('borrowed-list');
-//    let container = document.getElementById('available-list');
-//    let input = `<div class="container" id="container-borrowed">
-//    <div class="list borrowed">
-//        ${data[0]['innerHTML']}
-//    </div>
-//    <button type="submit" class="btn-available" onclick="sendDataAvailableBorrowed()">Available</button>
-//    <button type="submit" class="btn-broken" onclick="sendDataBrokenBorrowed()">Broken</button>
-//    </div>`
-//    list.innerHTML += input
-//    container.innerHTML = ''
-// }
-// function sendDataBrokenAvailable() {
-//    let data = document.getElementsByClassName('available');
-//    let list = document.getElementById('broken-list');
-//    let container = document.getElementById('available-list')
-//    let input = `<div class="container" id="container-broken">
-//    <div class="list broken">
-//        ${data[0]['innerHTML']}
-//    </div>
-//    <button type="submit" class="btn-available" onclick="sendDataAvailableBroken()">Available</button>
-//    <button type="submit" class="btn-delete" onclick="deleteData()">Delete</button>
-//    </div>`
-//    list.innerHTML += input
-//    container.innerHTML = ''
-// }
-// function sendDataAvailableBorrowed() {
-//    let data = document.getElementsByClassName('borrowed');
-//    let list = document.getElementById('available-list');
-//    let container = document.getElementById('borrowed-list')
-//    let input = `<div class="container" id="container-available">
-//    <div class="list available">
-//        ${data[0]['innerHTML']}
-//    </div>
-//    <button type="submit" class="btn-borrowed" onclick="sendDataBorrowedAvailable()">Borrowed</button>
-//    <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable()">Broken</button>
-//    </div>`
-//    list.innerHTML += input
-//    container.innerHTML = ''
-// }
-// function sendDataBrokenBorrowed() {
-//    let data = document.getElementsByClassName('borrowed');
-//    let list = document.getElementById('broken-list');
-//    let container = document.getElementById('borrowed-list')
-//    let input = `<div class="container-list" id="container-broken">
-//    <div class="list broken">
-//        ${data[0]['innerHTML']}
-//    </div>
-//    <button type="submit" class="btn-available" onclick="sendDataAvailableBroken()">Available</button>
-//    <button type="submit" class="btn-delete" onclick="deleteData()">Delete</button>
-//    </div>`
-//    list.innerHTML += input
-//    container.innerHTML = ''
-// }
-// function sendDataAvailableBroken() {
-//    let data = document.getElementsByClassName('broken');
-//    let list = document.getElementById('available-list');
-//    let container = document.getElementById('broken-list')
-//    let input = `<div class="container-list" id="container-available">
-//    <div class="list available">
-//        ${data[0]['innerHTML']}
-//    </div>
-//    <button type="submit" class="btn-borrowed" onclick="sendDataBorrowedAvailable()">Borrowed</button>
-//    <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable()">Broken</button>
-//    </div>`
-//    list.innerHTML += input
-//    container.innerHTML = ''
-// }
-// function deleteData() {
-//    let container = document.getElementById('broken-list')
-//    container.innerHTML = ''
-// }
+
+function sendDataBrokenAvailable(num) {
+   let broken_list = document.getElementById('broken-list')
+   let available_list = document.getElementById(`container-available${num}`)
+   for (let i = 0; i < available.length; i++) {
+      if (i === num) {
+         let input = `<div class="container" id="container-broken${available[i][0]}">
+         <div class="list broken">
+             ${available[i][1]}
+         </div>
+         <button type="submit" class="btn-available"
+             onclick="sendDataAvailableBroken(${available[i][0]})">Available</button>
+         <button type="submit" class="btn-delete" onclick="deleteData(${available[i][0]})">Delete</button>
+     </div>`
+     broken_list.innerHTML += input
+     broken.push(available[i])
+      }
+   }
+   available_list.remove()
+   available.splice(num)
+}
+
+function sendDataAvailableBorrowed(num) {
+   let available_list = document.getElementById('available-list')
+   let borrowed_list = document.getElementById(`container-borrowed${num}`)
+   for (let i = 0; i < borrowed.length; i++) {
+      if (i === num) {
+         let input = `<div class="container" id="container-available${borrowed[i][0]}">
+         <div class="list available">
+             ${borrowed[i][1]}
+         </div>
+         <button type="submit" class="btn-borrowed"
+             onclick="sendDataBorrowedAvailable(${borrowed[i][0]})">Borrowed</button>
+         <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable(${borrowed[i][0]})">Broken</button>
+     </div>`
+     available_list.innerHTML += input
+     available.push(borrowed[i])
+      }
+   }
+   borrowed_list.remove()
+   borrowed.splice(num)
+}
+
+function sendDataBrokenBorrowed(num) {
+   let broken_list = document.getElementById('broken-list')
+   let borrowed_list = document.getElementById(`container-borrowed${num}`)
+   for (let i = 0; i < borrowed.length; i++) {
+      if (i === num) {
+         let input = `<div class="container" id="container-broken${borrowed[i][0]}">
+         <div class="list broken">
+             ${borrowed[i][1]}
+         </div>
+         <button type="submit" class="btn-available"
+             onclick="sendDataAvailableBroken(${borrowed[i][0]})">Available</button>
+         <button type="submit" class="btn-delete" onclick="deleteData(${borrowed[i][0]})">Delete</button>
+     </div>`
+     broken_list.innerHTML += input
+     broken.push(borrowed[i])
+      }
+   }
+   borrowed_list.remove()
+   borrowed.splice(num)
+}
+
+function sendDataAvailableBroken(num) {
+   let available_list = document.getElementById('available-list')
+   let broken_list = document.getElementById(`container-broken${num}`)
+   for (let i = 0; i < broken.length; i++) {
+      if (i === num) {
+         let input = `<div class="container" id="container-available${broken[i][0]}">
+         <div class="list available">
+             ${broken[i][1]}
+         </div>
+         <button type="submit" class="btn-borrowed"
+             onclick="sendDataBorrowedAvailable(${broken[i][0]})">Borrowed</button>
+         <button type="submit" class="btn-broken" onclick="sendDataBrokenAvailable(${broken[i][0]})">Broken</button>
+     </div>`
+     available_list.innerHTML += input
+     available.push(broken[i])
+      }
+   }
+   broken_list.remove()
+   broken.splice(num)
+}
+
+function deleteData(num) {
+   let broken_list = document.getElementById(`container-broken${num}`)
+
+   broken_list.remove()
+   broken.splice(num)
+}
